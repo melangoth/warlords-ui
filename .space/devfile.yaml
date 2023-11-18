@@ -1,0 +1,21 @@
+schemaVersion: 2.2.0
+attributes:
+  space:
+    editor:
+      type: Idea
+    requiredParameters:
+      # (Required) the name of the environment variable
+      # that will be available in the dev environment
+      - name: GREETING
+        description: 'Greeting for test parameter requirement'
+    requiredSecrets:
+      - name: TEST_SECRET
+        description: 'Required test secret'
+components:
+  - name: dev-container
+    container:
+      env:
+        - name: VAR_A
+          value: 'valueA'
+        - name: VAR_B
+          value: 'valueB'

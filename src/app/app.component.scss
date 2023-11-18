@@ -1,0 +1,16 @@
+.flex-container {
+  display: flex;
+  height: 100%;
+}
+
+#left-side {
+  width: 200px;
+  margin: .3em;
+  padding: .3em;
+  background-color: #eeeeee;
+}
+
+#router {
+  width: 100%;
+  height: 100%;
+}
