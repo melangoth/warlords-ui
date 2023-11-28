@@ -1,0 +1,12 @@
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+  <div>{{typeName}}</div>
+  <div class="unit-size-controls">
+    <div style="margin-right: .5em">{{size}}</div>
+    <div class="controls">
+      <ng-container *ngIf="editable">
+        <button (click)="increaseUnit()">+</button>
+        <button (click)="decreaseUnit()">-</button>
+      </ng-container>
+    </div>
+  </div>
+</div>

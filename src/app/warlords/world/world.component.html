@@ -1,0 +1,96 @@
+<ng-template #noWorld>
+  Waiting for world...
+</ng-template>
+<ng-container *ngIf="world else noWorld">
+  <div class="info-panel">
+    <div class="settings">
+      <div>
+        <div>World:</div>
+        <div>{{ world.name }}</div>
+      </div>
+      <div>
+        <div>Show coordinates:</div>
+        <div><input [(ngModel)]="showCoordinates" type="checkbox"></div>
+      </div>
+      <div>
+        <div>Show units:</div>
+        <div><input [(ngModel)]="showUnits" type="checkbox"></div>
+      </div>
+    </div>
+    <div>
+      <div class="selected-tile">
+        <span>Selected tile:</span>
+        <ng-container *ngIf="selectedTile">
+        <span>
+          <span class="q">q{{selectedTile.coords.q}}</span>
+          <span class="r">r{{selectedTile.coords.r}}</span>
+          <span class="s">s{{selectedTile.coords.s}}</span>
+        </span>
+        </ng-container>
+      </div>
+      <div *ngIf="selectedTile">
+        <div>Units</div>
+        <div style="margin: 0 .5em">
+          <ng-container *ngIf="world.getUnitAt(selectedTile.coords.key) as tileUnits">
+            <app-unit-widget
+              *ngFor="let unit of tileUnits"
+              [size]="unit.size"
+              [type]="unit.type"
+            ></app-unit-widget>
+          </ng-container>
+        </div>
+      </div>
+      <div>
+        <div>Recruit</div>
+        <div style="margin: 0 .5em">
+          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
+                           [type]="'i'"></app-unit-widget>
+          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
+                           [type]="'c'"></app-unit-widget>
+          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
+                           [type]="'a'"></app-unit-widget>
+          <div style="display: flex; flex-direction: row; justify-content: flex-end">
+            <button (click)="applyRecruitment()">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div (drag)="onDrag($event)" (dragstart)="onDragStart($event)" draggable="true" id="canvas">
+    <div
+      (click)=onMouseClick(tile)
+      (mouseenter)="onMouseEnter(tile)"
+      (mouseleave)="onMouseLeave(tile)"
+      *ngFor="let tile of world.tiles"
+      [class.hovered]="tile.mouseOver"
+      [class.selected]="tile.selected"
+      [ngClass]="tile.state"
+      [style.height.px]="world.tileHeight"
+      [style.left.px]="tile.left + dragOffset.x"
+      [style.top.px]="tile.top + dragOffset.y"
+      [style.width.px]="world.tileWidth"
+      class="tile-hex-flat">
+      <ng-container *ngIf="showUnits && world.getUnitAt(tile.coords.key) as tileUnits">
+        <div class="tile-units">
+          <div>
+            <span *ngFor="let unit of tileUnits">{{unit.size}}{{unit.type}}</span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="showCoordinates">
+      <div
+        *ngFor="let tile of world.tiles; let i = index;"
+        [style.height.px]="world.tileHeight"
+        [style.left.px]="tile.left + dragOffset.x"
+        [style.top.px]="tile.top + dragOffset.y"
+        [style.width.px]="world.tileWidth"
+        class="tile-info">
+        <div class="i">{{i}}</div>
+        <div class="q">{{tile.q}}q</div>
+        <div class="r">{{tile.r}}r</div>
+        <div class="s">{{tile.s}}s</div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

@@ -1,0 +1,13 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    color: #1976d2;
+  }
+
+  a.active {
+    color: deeppink;
+    font-weight: 600;
+  }
+}
