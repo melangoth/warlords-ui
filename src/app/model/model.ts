@@ -7,3 +7,9 @@ export class CredentialResponse {
   ) {
   }
 }
+
+export interface CredentialValidationResponse {
+  success: boolean,
+  name: string,
+  pictureUrl: string
+}

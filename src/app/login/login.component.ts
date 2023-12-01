@@ -11,10 +11,6 @@ export class LoginComponent {
   constructor(private currentUserService: CurrentUserService) {
   }
 
-  login() {
-    this.currentUserService.setCurrentUser(new CredentialResponse('i7', 'i7', '', ''));
-  }
-
   logout() {
     this.currentUserService.setCurrentUser();
   }
