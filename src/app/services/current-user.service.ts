@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, first, Observable} from "rxjs";
-import {CredentialResponse, CredentialValidationResponse} from "../model/model";
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment";
+import {BehaviorSubject, first, Observable} from 'rxjs';
+import {CredentialResponse, CredentialValidationResponse} from '../model/model';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,9 @@ export class CurrentUserService {
     // https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
     if (credentialResponse) {
       this.http
-        .post<CredentialValidationResponse>(this.url + "/login", credentialResponse)
+        .post<CredentialValidationResponse>(this.url + '/login', credentialResponse)
         .pipe(first())
-        .subscribe(validationResponse => {
+        .subscribe((validationResponse: CredentialValidationResponse) => {
           console.log('User login server ACK', validationResponse);
 
           if (validationResponse?.success) {
@@ -34,15 +34,23 @@ export class CurrentUserService {
             this.currentUser.token = credentialResponse.credential;
             this.currentUserSubject$.next(this.currentUser);
           }
-        })
+        });
     } else {
       this.currentUser = undefined;
-      this.currentUserSubject$.next(this.currentUser)
+      this.currentUserSubject$.next(this.currentUser);
     }
   }
 
   getCurrentUser(): CurrentUser | undefined {
     return this.currentUser;
+  }
+
+  testCors() {
+    this.http.get<any>('http://localhost:8088/user/free').subscribe();
+  }
+
+  testSafe() {
+    this.http.get<any>('http://localhost:8088/user/safe').subscribe();
   }
 }
 

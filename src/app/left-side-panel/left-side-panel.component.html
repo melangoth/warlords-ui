@@ -12,6 +12,6 @@
   <div>Logged in as:</div>
   <div *ngIf="loggedInUser$ | async as loggedInUser">
     <div>{{ loggedInUser.name }}</div>
-    <img [ngSrc]="loggedInUser.pictureUrl" height="100" width="100">
+    <img [ngSrc]="loggedInUser.pictureUrl" alt="profile picture" height="100" width="100">
   </div>
 </div>
