@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, first, Observable} from "rxjs";
 import {Router} from "@angular/router";
-import {CredentialResponse} from "../model/model";
+import {CredentialResponse, LoginResponse} from "../model/model";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 
@@ -12,13 +12,8 @@ export class CurrentUserService {
   private readonly url = environment.warlords_backend_url + '/user';
   private currentUser: CurrentUser | undefined;
   private _currentUser$ = new BehaviorSubject<CurrentUser | undefined>(undefined);
-  private users = new Map<string, string>();
 
-  constructor(private router: Router, private http: HttpClient) {
-    // todo remove this stuff after backend can handle logins
-    this.users.set('i7', 'Demo User');
-    this.users.set('175594743423-b9pf7sduf4pap78mkehr5okpqvhdrheb.apps.googleusercontent.com', 'Google User')
-  }
+  constructor(private router: Router, private http: HttpClient) {}
 
   get currentUser$(): Observable<CurrentUser | undefined> {
     return this._currentUser$;
@@ -32,15 +27,20 @@ export class CurrentUserService {
 
     if (credentialResponse) {
       this.http
-        .post(this.url + "/login", credentialResponse)
+        .post<LoginResponse>(this.url + "/login", credentialResponse)
         .pipe(first())
-        .subscribe(credentialResponse => console.log('User login server ACK', credentialResponse))
+        .subscribe(loginResponse => {
+          console.log('User login server ACK', loginResponse);
+
+          if (loginResponse?.success) {
+            this.currentUser = new CurrentUser(loginResponse.userId, loginResponse.name);
+            this._currentUser$.next(this.currentUser);
+          }
+        })
+    } else {
+      this.currentUser = undefined;
+      this._currentUser$.next(this.currentUser)
     }
-
-    let name = (credentialResponse) ? this.users.get(credentialResponse.clientId) : undefined;
-    this.currentUser = (credentialResponse && name) ? new CurrentUser(credentialResponse.clientId, name) : undefined;
-
-    this._currentUser$.next(this.currentUser);
   }
 
   getCurrentUser(): CurrentUser | undefined {

@@ -7,3 +7,12 @@ export class CredentialResponse {
   ) {
   }
 }
+
+export interface  LoginResponse {
+  success: boolean;
+  message: string;
+  pictureUrl: string;
+  name: string;
+  email: string;
+  userId: string;
+}
