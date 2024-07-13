@@ -7,7 +7,7 @@
     "start:gitpod": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check true",
     "start:space": "ng serve",
     "build": "ng build",
-    "build:github": "ng build --delete-output-path true --output-path ./docs --base-href https://melangoth.github.io/space/",
+    "build:github": "ng build --delete-output-path true --output-path ./docs --base-href https://melangoth.github.io/warlords-ui/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "mockapi": "json-server --port=5000 --watch mockapi/db.json"
