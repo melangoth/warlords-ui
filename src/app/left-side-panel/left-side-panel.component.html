@@ -9,5 +9,9 @@
   <hr/>
   <a routerLink="/profile" routerLinkActive="active">Profile</a>
   <a routerLink="/login" routerLinkActive="active">Login</a>
-  <div>Logged in as: <span *ngIf="loggedInUser$ | async as loggedInUser">{{ loggedInUser.name }}</span></div>
+  <div>Logged in as:</div>
+  <div *ngIf="loggedInUser$ | async as loggedInUser">
+    <div>{{ loggedInUser.name }}</div>
+    <img [ngSrc]="loggedInUser.pictureUrl" height="100" width="100">
+  </div>
 </div>

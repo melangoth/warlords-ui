@@ -11,6 +11,7 @@ import {LoginComponent} from './login/login.component';
 import {AuthButtonComponent} from './auth-button/auth-button.component';
 import {WarlordsModule} from "./warlords/warlords.module";
 import {HttpClientModule} from "@angular/common/http";
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {HttpClientModule} from "@angular/common/http";
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    WarlordsModule
+    WarlordsModule,
+    NgOptimizedImage
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, first, Observable} from "rxjs";
-import {Router} from "@angular/router";
-import {CredentialResponse, LoginResponse} from "../model/model";
+import {CredentialResponse, CredentialValidationResponse} from "../model/model";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 
@@ -11,35 +10,33 @@ import {environment} from "../../environments/environment";
 export class CurrentUserService {
   private readonly url = environment.warlords_backend_url + '/user';
   private currentUser: CurrentUser | undefined;
-  private _currentUser$ = new BehaviorSubject<CurrentUser | undefined>(undefined);
+  private currentUserSubject$ = new BehaviorSubject<CurrentUser | undefined>(undefined);
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   get currentUser$(): Observable<CurrentUser | undefined> {
-    return this._currentUser$;
+    return this.currentUserSubject$;
   }
 
   setCurrentUser(credentialResponse?: CredentialResponse) {
+    // todo: refactor server side to align with class names and endpoints
     // https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
-    // todo: add credential validation
-    // todo: move validation and user login to backend
-    // todo: add csrf validation
-
     if (credentialResponse) {
       this.http
-        .post<LoginResponse>(this.url + "/login", credentialResponse)
+        .post<CredentialValidationResponse>(this.url + "/login", credentialResponse)
         .pipe(first())
-        .subscribe(loginResponse => {
-          console.log('User login server ACK', loginResponse);
+        .subscribe(validationResponse => {
+          console.log('User login server ACK', validationResponse);
 
-          if (loginResponse?.success) {
-            this.currentUser = new CurrentUser(loginResponse.userId, loginResponse.name);
-            this._currentUser$.next(this.currentUser);
+          if (validationResponse?.success) {
+            this.currentUser = new CurrentUser(validationResponse.userId, validationResponse.name, validationResponse.pictureUrl);
+            this.currentUserSubject$.next(this.currentUser);
           }
         })
     } else {
       this.currentUser = undefined;
-      this._currentUser$.next(this.currentUser)
+      this.currentUserSubject$.next(this.currentUser)
     }
   }
 
@@ -51,7 +48,8 @@ export class CurrentUserService {
 export class CurrentUser {
   constructor(
     private _id: string,
-    private _name: string
+    private _name: string,
+    private _pictureUrl: string
   ) {
   }
 
@@ -61,5 +59,9 @@ export class CurrentUser {
 
   get name(): string {
     return this._name;
+  }
+
+  get pictureUrl(): string {
+    return this._pictureUrl;
   }
 }

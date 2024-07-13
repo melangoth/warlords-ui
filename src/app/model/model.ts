@@ -8,7 +8,7 @@ export class CredentialResponse {
   }
 }
 
-export interface  LoginResponse {
+export interface CredentialValidationResponse {
   success: boolean;
   message: string;
   pictureUrl: string;
