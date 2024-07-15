@@ -8,7 +8,7 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class CurrentUserService {
-  private readonly url = environment.warlords_backend_url + '/user';
+  private readonly url = environment.warlords_backend_url + '/api/user';
   private currentUser: CurrentUser | undefined;
   private currentUserSubject$ = new BehaviorSubject<CurrentUser | undefined>(undefined);
 
@@ -31,6 +31,7 @@ export class CurrentUserService {
 
           if (validationResponse?.success) {
             this.currentUser = new CurrentUser(validationResponse.userId, validationResponse.name, validationResponse.pictureUrl);
+            this.currentUser.token = credentialResponse.credential;
             this.currentUserSubject$.next(this.currentUser);
           }
         })
@@ -46,6 +47,8 @@ export class CurrentUserService {
 }
 
 export class CurrentUser {
+  private _token: string | undefined;
+
   constructor(
     private _id: string,
     private _name: string,
@@ -63,5 +66,13 @@ export class CurrentUser {
 
   get pictureUrl(): string {
     return this._pictureUrl;
+  }
+
+  get token(): string | undefined {
+    return this._token;
+  }
+
+  set token(token: string) {
+    this._token = token;
   }
 }
