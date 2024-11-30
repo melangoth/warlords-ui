@@ -65,13 +65,12 @@ export class World {
 
 export class Coords {
   constructor(public q: number,
-              public r: number,
-              public s: number
+              public r: number
   ) {
   }
 
   get key(): string {
-    return `q${this.q}r${this.r}s${this.s}`;
+    return `q${this.q}r${this.r}`;
   }
 }
 
@@ -94,7 +93,7 @@ export class Tile extends Coords {
     public left: number,
     public top: number
   ) {
-    super(coords.q, coords.r, coords.s);
+    super(coords.q, coords.r);
     this.state = 'normal';
   }
 }

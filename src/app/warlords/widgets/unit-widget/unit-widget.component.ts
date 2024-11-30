@@ -32,8 +32,8 @@ export class UnitWidgetComponent implements OnChanges {
 
   increaseUnit() {
     this.size++;
-    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0, 0), this.type, 1));
-    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0, 0), this.type, this.size));
+    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, 1));
+    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, this.size));
   }
 
   decreaseUnit() {
@@ -45,7 +45,7 @@ export class UnitWidgetComponent implements OnChanges {
       this.size--;
     }
 
-    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0, 0), this.type, -1));
-    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0, 0), this.type, this.size));
+    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, -1));
+    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, this.size));
   }
 }

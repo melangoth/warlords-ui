@@ -7,12 +7,12 @@ import * as _ from 'lodash';
 
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 
-const UP_LEFT = new Coords(-1, 0, 1);
-const UP = new Coords(0, -1, +1);
-const UP_RIGHT = new Coords(1, -1, 0);
-const DOWN_RIGHT = new Coords(1, 0, -1);
-const DOWN = new Coords(0, 1, -1);
-const DOWN_LEFT = new Coords(-1, 1, 0);
+const UP_LEFT = new Coords(-1, 0);
+const UP = new Coords(0, -1);
+const UP_RIGHT = new Coords(1, -1);
+const DOWN_RIGHT = new Coords(1, 0);
+const DOWN = new Coords(0, 1);
+const DOWN_LEFT = new Coords(-1, 1);
 
 @Component({
   selector: 'app-map',
@@ -31,19 +31,20 @@ export class WorldComponent implements OnInit {
   recruitRegister = new Map<string, Unit>();
 
   constructor(private worldService: WorldService) {
-    this.recruitRegister.set('i', new Unit(new Coords(0, 0, 0), 'i', 0));
-    this.recruitRegister.set('c', new Unit(new Coords(0, 0, 0), 'c', 0));
-    this.recruitRegister.set('a', new Unit(new Coords(0, 0, 0), 'a', 0));
+    this.recruitRegister.set('i', new Unit(new Coords(0, 0), 'i', 0));
+    this.recruitRegister.set('c', new Unit(new Coords(0, 0), 'c', 0));
+    this.recruitRegister.set('a', new Unit(new Coords(0, 0), 'a', 0));
   }
 
   ngOnInit() {
     this.worldService.world$.pipe(first()).subscribe(world => {
       this.world = world;
-      const y = (_.maxBy(world.coords, 's')?.s || 0);
+      // const y = (_.maxBy(world.coords, 's')?.s || 0);
+      const y = (_.maxBy(world.coords, 'r')?.r || 0); // if this was based off s, how it has changed by calculating off r?
       const x = (_.minBy(world.coords, 'q')?.q || 0) * -1;
       this.dragOffset = {x: x * world.tileWidth * 3 / 4, y: y * world.tileHeight};
 
-      const preselectTile = world.tilesMap.get('q1r-2s1');
+      const preselectTile = world.tilesMap.get('q1r-2');
       if (preselectTile) {
         this.onMouseClick(preselectTile);
       }
