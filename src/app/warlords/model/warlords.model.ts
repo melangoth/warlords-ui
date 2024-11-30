@@ -9,6 +9,11 @@ export class World {
   public unitsMap: Map<string, Unit[]> = new Map();
   public recruitsMap = new Map<string, Unit>();
 
+  public turnNumber: number = 0;
+  public turnStatus: string = 'Unknown';
+  public playerId: string;
+  public playerName: string;
+
   constructor(
     public name: string,
     public coords: Coords[],
