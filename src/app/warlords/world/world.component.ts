@@ -92,10 +92,9 @@ export class WorldComponent implements OnInit {
     }
   }
 
-  applyRecruitment() {
+  submitRecruitAction() {
     this.worldService.recruitUnits(
       [...this.recruitRegister.values()]
-        .filter(unit => unit.size > 0)
     );
   }
 }

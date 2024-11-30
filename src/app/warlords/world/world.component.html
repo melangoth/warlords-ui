@@ -16,6 +16,10 @@
         <div>Show units:</div>
         <div><input [(ngModel)]="showUnits" type="checkbox"></div>
       </div>
+      <div>
+        <div>Turn:</div>
+        <div>{{ world.turnStatus }} - {{ world.turnNumber }}</div>
+      </div>
     </div>
     <div>
       <div class="selected-tile">
@@ -49,7 +53,7 @@
           <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
                            [type]="'a'"></app-unit-widget>
           <div style="display: flex; flex-direction: row; justify-content: flex-end">
-            <button (click)="applyRecruitment()">Apply</button>
+            <button (click)="submitRecruitAction()">Submit</button>
           </div>
         </div>
       </div>
