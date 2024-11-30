@@ -5,7 +5,7 @@ import {Observable, of} from 'rxjs';
 @Injectable({providedIn: 'root'})
 export class WorldService {
   public readonly fieldRadius = 3;
-  public _baseCoords = new Coords(0, 0, 0);
+  public _baseCoords = new Coords(0, 0);
   private currentWorld: World | undefined;
 
   get world$(): Observable<World> {
@@ -14,7 +14,7 @@ export class WorldService {
       for (let r = this.fieldRadius * -1; r <= this.fieldRadius; r++) {
         const s = 0 - q - r;
         if (s >= this.fieldRadius * -1 && s <= this.fieldRadius) {
-          coords.push(new Coords(q, r, s));
+          coords.push(new Coords(q, r));
         }
       }
     }
@@ -23,10 +23,10 @@ export class WorldService {
         'Dummy World',
         coords,
         [
-          new Unit(new Coords(1, -2, 1), 'c', 3),
-          new Unit(new Coords(1, -2, 1), 'i', 7),
-          new Unit(new Coords(1, -1, 0), 'i', 10),
-          new Unit(new Coords(1, -1, 0), 'i', 1)
+          new Unit(new Coords(1, -2), 'c', 3),
+          new Unit(new Coords(1, -2), 'i', 7),
+          new Unit(new Coords(1, -1), 'i', 10),
+          new Unit(new Coords(1, -1), 'i', 1)
         ]
     );
 
