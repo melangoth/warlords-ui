@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Coords, Unit, World} from '../model/warlords.model';
+import {Coords, RecruitEvent, World} from '../model/warlords.model';
 import {first, forkJoin, mergeMap, Observable, ReplaySubject, tap} from 'rxjs';
 import {HttpClient} from "@angular/common/http";
-import {CommandSixGame, CommandSixRecruitAction, CommandSixTurn} from "../model/commandsix.model";
+import {CommandSixGame, CommandSixRecruitAction, CommandSixTurn, CommandSixUnit} from "../model/commandsix.model";
 
 @Injectable({providedIn: 'root'})
 export class WorldService {
@@ -12,12 +12,8 @@ export class WorldService {
 
   private currentWorld: World;
   private game: CommandSixGame;
-  private readonly unitTypeMap = new Map<string, string>();
 
   constructor(private http: HttpClient) {
-    this.unitTypeMap.set('I', 'INFANTRY');
-    this.unitTypeMap.set('C', 'CAVALRY');
-    this.unitTypeMap.set('A', 'ARTILLERY');
 
     this.http.get<CommandSixGame[]>(`${this.baseUrl}/api/v1/games/list`)
       .pipe(
@@ -34,6 +30,18 @@ export class WorldService {
         tap(turn => console.log('Turn found:', turn)),
         tap(turn => this.currentWorld.turnNumber = turn.turnNumber),
         tap(turn => this.currentWorld.turnStatus = turn.status),
+        mergeMap(() => this.http.get<CommandSixUnit[]>(`${this.baseUrl}/api/v1/units/byOwner/${this.currentWorld.playerId}`).pipe(first())),
+        tap(units => console.log('Units found:', units)),
+        tap((units: CommandSixUnit[]) => {
+          const tiles = this.currentWorld.tilesMap;
+          units.forEach(unit => {
+            const tile = tiles.get(unit.coords);
+            if (tile) {
+              tile.addUnits([unit]);
+              console.log('Unit added to tile:', tile, unit);
+            }
+          });
+        }),
         tap(() => this._world$.next(this.currentWorld))
       )
       .subscribe();
@@ -48,13 +56,7 @@ export class WorldService {
   createWorld(game: CommandSixGame): World {
     return new World(
       game.name,
-      this.generateCoords(this.fieldRadius),
-      [
-        new Unit(new Coords(1, -2), 'c', 3),
-        new Unit(new Coords(1, -2), 'i', 7),
-        new Unit(new Coords(1, -1), 'i', 10),
-        new Unit(new Coords(1, -1), 'i', 1)
-      ]
+      this.generateCoords(this.fieldRadius)
     );
   }
 
@@ -71,19 +73,14 @@ export class WorldService {
     return coords;
   }
 
-  recruitUnits(units: Unit[]) {
-    const recruitedUnits = units
-      .filter(unit => unit.size > 0)
-      .map(unit => new Unit(this.baseCoords, unit.type, unit.size));
-    this.currentWorld?.updateRecruits(recruitedUnits);
-
-    const recruitActions = units.map(unit => {
+  recruitUnits(recruitEvents: RecruitEvent[]) {
+    const recruitActions = recruitEvents.map(recruit => {
       const action: CommandSixRecruitAction = {
         gameId: this.game.id,
         playerId: this.currentWorld.playerId,
         turnNumber: this.currentWorld.turnNumber,
-        quantity: unit.size,
-        unitType: this.unitTypeMap.get(unit.type.toUpperCase()) || '',
+        quantity: recruit.quantity,
+        unitType: recruit.unitType,
         destination: this.baseCoords.key
 
       };

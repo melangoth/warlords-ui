@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {Coords, Tile, Unit} from '../../model/warlords.model';
+import {RecruitEvent, Tile} from '../../model/warlords.model';
+import {UnitType} from "../../model/commandsix.model";
 
 @Component({
   selector: 'app-unit-widget',
@@ -7,33 +8,31 @@ import {Coords, Tile, Unit} from '../../model/warlords.model';
   styleUrls: ['./unit-widget.component.scss']
 })
 export class UnitWidgetComponent implements OnChanges {
-  @Input() type: string = 'm';
+  @Input() type: UnitType = UnitType.MILITIA;
   @Input() size: number = 0;
   @Input() tile: Tile | undefined;
   @Input() editable = false;
   @Input() restrictions = '';
 
-  @Output() unitSizeChangedBy = new EventEmitter<Unit>;
-  @Output() unitSizeChanged = new EventEmitter<Unit>;
+  @Output() unitSizeChangedBy = new EventEmitter<RecruitEvent>;
+  @Output() unitSizeChanged = new EventEmitter<RecruitEvent>;
 
-  typeName: string = 'Militia';
-  typeNames = new Map<string, string>();
+  typeName: string = '';
 
   constructor() {
-    this.typeNames.set('m', 'Militia');
-    this.typeNames.set('i', 'Infantry');
-    this.typeNames.set('c', 'Cavalry');
-    this.typeNames.set('a', 'Artillery');
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.typeName = this.typeNames.get(this.type) || 'Militia';
+    if (changes["type"]) {
+      this.typeName = UnitType[this.type];
+    }
+
   }
 
   increaseUnit() {
     this.size++;
-    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, 1));
-    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, this.size));
+    this.unitSizeChangedBy.emit(new RecruitEvent(this.type, 1));
+    this.unitSizeChanged.emit(new RecruitEvent(this.type, this.size));
   }
 
   decreaseUnit() {
@@ -45,7 +44,7 @@ export class UnitWidgetComponent implements OnChanges {
       this.size--;
     }
 
-    this.unitSizeChangedBy.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, -1));
-    this.unitSizeChanged.emit(new Unit(this.tile?.coords || new Coords(0, 0), this.type, this.size));
+    this.unitSizeChangedBy.emit(new RecruitEvent(this.type, -1));
+    this.unitSizeChanged.emit(new RecruitEvent(this.type, this.size));
   }
 }

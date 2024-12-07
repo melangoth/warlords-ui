@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import {CommandSixUnit, UnitType} from "./commandsix.model";
 
 export class World {
   public readonly tileRadius = 70;
@@ -6,8 +6,6 @@ export class World {
   public readonly tileHeight = Math.sqrt(3) * this.tileRadius;
 
   public tilesMap: Map<string, Tile> = new Map();
-  public unitsMap: Map<string, Unit[]> = new Map();
-  public recruitsMap = new Map<string, Unit>();
 
   public turnNumber: number = 0;
   public turnStatus: string = 'Unknown';
@@ -16,8 +14,7 @@ export class World {
 
   constructor(
     public name: string,
-    public coords: Coords[],
-    private initialUnits: Unit[]
+    public coords: Coords[]
   ) {
     const fieldLeftOffset = /*fieldRadius * 3 / 4 * TILE_WIDTH*/ 0;
     const fieldTopOffset = /*fieldRadius * 0.5 * TILE_HEIGHT*/ 0;
@@ -33,38 +30,16 @@ export class World {
         )
       )
     });
-
-    this.initialUnits.forEach(unit => this.addUnits(unit));
-  }
-
-  get units(): Unit[] {
-    let unitArrays = [...this.unitsMap.values(), ...this.recruitsMap.values()];
-    return _.flatten(unitArrays);
-  }
-
-  updateRecruits(recruits: Unit[]) {
-    this.recruitsMap = new Map<string, Unit>();
-    recruits.forEach(recruit => {
-      this.recruitsMap.set(recruit.coords.key + recruit.type, recruit);
-    });
   }
 
   get tiles(): Tile[] {
     return [...this.tilesMap.values()];
   }
 
-  addUnits(unit: Unit) {
-    let units = this.unitsMap.get(unit.coords.key) || [];
-    this.unitsMap.set(unit.coords.key, [...units, unit]);
-  }
-
-  getUnitAt(coords: string | Coords): Unit[] | undefined {
+  getUnitAt(coords: string | Coords): UnitGroup[] {
     const key = (coords instanceof Coords) ? coords.key : coords;
-    const units: Unit[] = [];
-    units.push(...this.unitsMap.get(key) || []);
-    const recruits = [...this.recruitsMap.values()].filter(unit => unit.coords.key.startsWith(key));
-    units.push(...recruits);
-    return units;
+    const tile = this.tilesMap.get(key);
+    return tile ? [...tile.unitGroups.values()] : [];
   }
 }
 
@@ -79,19 +54,12 @@ export class Coords {
   }
 }
 
-export class Unit {
-  constructor(
-    public coords: Coords,
-    public type: string,
-    public size: number
-  ) {
-  }
-}
-
 export class Tile extends Coords {
   public state: string;
   public mouseOver = false;
   public selected = false;
+  public unitGroups: Map<UnitType, UnitGroup> = new Map();
+  public unitsSignature = '';
 
   constructor(
     public coords: Coords,
@@ -101,9 +69,74 @@ export class Tile extends Coords {
     super(coords.q, coords.r);
     this.state = 'normal';
   }
+
+  addUnits(units: CommandSixUnit[]) {
+    units.forEach(unit => {
+      const unitGroup = this.unitGroups.get(unit.unitType) || new UnitGroup(unit.unitType);
+      unitGroup.addUnit(unit);
+      this.unitGroups.set(unit.unitType, unitGroup);
+    });
+
+    this.unitsSignature = this.getUnitsSignature();
+  }
+
+  getUnitsSignature() {
+    const unitsSignature = [...this.unitGroups.values()]
+      .map(unitGroup => unitGroup.getGroupSize() + unitGroup.getUnitType().toString()[0].toLowerCase())
+      .join(' ');
+    console.log('Generated units signature: ', this.coords, unitsSignature);
+    return unitsSignature;
+  }
+}
+
+export class UnitGroup {
+  unitType: UnitType;
+  quantity: number;
+  units: CommandSixUnit[];
+  coords: string;
+
+  constructor(unitType: UnitType, coords?: string) {
+    this.unitType = unitType;
+    this.quantity = 0;
+    this.units = [];
+    if (coords) {
+      this.coords = coords;
+    }
+  }
+
+  addUnit(unit: CommandSixUnit): boolean {
+    if (unit.unitType === this.unitType) {
+      this.units.push(unit);
+      this.quantity = this.units.length;
+      return true;
+    }
+    return false;
+  }
+
+  removeUnit(unit: CommandSixUnit) {
+    this.units = this.units.filter(u => u.id !== unit.id);
+    this.quantity = this.units.length;
+  }
+
+  getAllUnits(): CommandSixUnit[] {
+    return this.units;
+  }
+
+  getGroupSize(): number {
+    return this.quantity;
+  }
+
+  getUnitType(): UnitType {
+    return this.unitType;
+  }
 }
 
 export class Player {
   constructor(public name: string, public color: string) {
+  }
+}
+
+export class RecruitEvent {
+  constructor(public unitType: UnitType, public quantity: number, public coords: Coords = new Coords(0, 0)) {
   }
 }
