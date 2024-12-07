@@ -1,6 +1,8 @@
-export interface CommandSixCoords {
-  q: number;
-  r: number;
+export enum UnitType {
+  MILITIA = 'MILITIA',
+  INFANTRY = 'INFANTRY',
+  CAVALRY = 'CAVALRY',
+  ARTILLERY = 'ARTILLERY'
 }
 
 export interface CommandSixGame {
@@ -14,7 +16,7 @@ export interface CommandSixRecruitAction {
   gameId: number;
   playerId: string;
   turnNumber: number;
-  unitType: string;
+  unitType: UnitType;
   quantity: number;
   destination: string;
 }
@@ -26,3 +28,11 @@ export interface CommandSixTurn {
   status: string;
   playerIds: string[];
 }
+
+export interface CommandSixUnit {
+  id: string;
+  unitType: UnitType;
+  ownerId: string;
+  coords: string;
+}
+

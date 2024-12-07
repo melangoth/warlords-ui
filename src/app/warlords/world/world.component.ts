@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {first} from 'rxjs';
-import {Coords, Tile, Unit, World} from '../model/warlords.model';
+import {Coords, RecruitEvent, Tile, World} from '../model/warlords.model';
 import {WorldService} from '../services/world.service';
 import * as _ from 'lodash';
+import {UnitType} from "../model/commandsix.model";
 
 
 // https://www.redblobgames.com/grids/hexagons/#coordinates
@@ -13,6 +14,7 @@ const UP_RIGHT = new Coords(1, -1);
 const DOWN_RIGHT = new Coords(1, 0);
 const DOWN = new Coords(0, 1);
 const DOWN_LEFT = new Coords(-1, 1);
+const DEFAULT_CENTER = new Coords(0, 0);
 
 @Component({
   selector: 'app-map',
@@ -28,12 +30,13 @@ export class WorldComponent implements OnInit {
   dragStart = {x: 0, y: 0};
   dragOffset = {x: 0, y: 0};
 
-  recruitRegister = new Map<string, Unit>();
+  recruitEventRegister = new Map<UnitType, RecruitEvent>();
+  protected readonly UnitType = UnitType;
 
   constructor(private worldService: WorldService) {
-    this.recruitRegister.set('i', new Unit(new Coords(0, 0), 'i', 0));
-    this.recruitRegister.set('c', new Unit(new Coords(0, 0), 'c', 0));
-    this.recruitRegister.set('a', new Unit(new Coords(0, 0), 'a', 0));
+    this.recruitEventRegister.set(UnitType.INFANTRY, new RecruitEvent(UnitType.INFANTRY, 0));
+    this.recruitEventRegister.set(UnitType.CAVALRY, new RecruitEvent(UnitType.CAVALRY, 0));
+    this.recruitEventRegister.set(UnitType.ARTILLERY, new RecruitEvent(UnitType.ARTILLERY, 0));
   }
 
   ngOnInit() {
@@ -85,16 +88,16 @@ export class WorldComponent implements OnInit {
     this.dragStart = {x: $event.x - this.dragOffset.x, y: $event.y - this.dragOffset.y};
   }
 
-  registerRecruits($event: Unit) {
-    const register = this.recruitRegister.get($event.type);
-    if (register) {
-      register.size = ($event.size > 0) ? $event.size : 0;
+  registerRecruits($event: RecruitEvent) {
+    const groupRegister = this.recruitEventRegister.get($event.unitType);
+    if (groupRegister) {
+      groupRegister.quantity = ($event.quantity > 0) ? $event.quantity : 0;
     }
   }
 
   submitRecruitAction() {
     this.worldService.recruitUnits(
-      [...this.recruitRegister.values()]
+      [...this.recruitEventRegister.values()]
     );
   }
 }
