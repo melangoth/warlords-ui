@@ -81,11 +81,9 @@ export class Tile extends Coords {
   }
 
   getUnitsSignature() {
-    const unitsSignature = [...this.unitGroups.values()]
+    return [...this.unitGroups.values()]
       .map(unitGroup => unitGroup.getGroupSize() + unitGroup.getUnitType().toString()[0].toLowerCase())
       .join(' ');
-    console.log('Generated units signature: ', this.coords, unitsSignature);
-    return unitsSignature;
   }
 }
 
