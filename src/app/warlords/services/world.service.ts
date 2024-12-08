@@ -26,19 +26,16 @@ export class WorldService {
             this.currentWorld.playerId = this.game.playerIds[0];
           }
         }),
-        mergeMap(() => this.http.get<CommandSixTurn>(`${this.baseUrl}/api/v1/turns/latest/${this.game?.id}`).pipe(first())),
-        tap(turn => console.log('Turn found:', turn)),
-        tap(turn => this.currentWorld.turnNumber = turn.turnNumber),
-        tap(turn => this.currentWorld.turnStatus = turn.status),
+        mergeMap(() => this.loadTurn()),
         mergeMap(() => this.http.get<CommandSixUnit[]>(`${this.baseUrl}/api/v1/units/byOwner/${this.currentWorld.playerId}`).pipe(first())),
         tap(units => console.log('Units found:', units)),
+        // todo: need to rework it to be able to update upon turn processings from ui
         tap((units: CommandSixUnit[]) => {
           const tiles = this.currentWorld.tilesMap;
           units.forEach(unit => {
             const tile = tiles.get(unit.coords);
             if (tile) {
               tile.addUnits([unit]);
-              console.log('Unit added to tile:', tile, unit);
             }
           });
         }),
@@ -51,6 +48,16 @@ export class WorldService {
 
   get world$(): Observable<World> {
     return this._world$;
+  }
+
+  loadTurn() {
+    return this.http.get<CommandSixTurn>(`${this.baseUrl}/api/v1/turns/latest/${this.game?.id}`)
+      .pipe(
+        first(),
+        tap(turn => console.log('Turn found:', turn)),
+        tap(turn => this.currentWorld.turnNumber = turn.turnNumber),
+        tap(turn => this.currentWorld.turnStatus = turn.status)
+      )
   }
 
   createWorld(game: CommandSixGame): World {
@@ -96,5 +103,13 @@ export class WorldService {
         tap(responses => responses.forEach(r => console.log('Recruit Action saved:', r)))
       )
       .subscribe();
+  }
+
+  closeTurn(): Observable<string> {
+    return this.http.get<string>(`${this.baseUrl}/api/v1/turns/${this.currentWorld.turnNumber}/game/${this.game.id}/close`).pipe(first())
+  }
+
+  processTurn(): Observable<string> {
+    return this.http.get<string>(`${this.baseUrl}/api/v1/turns/${this.currentWorld.turnNumber}/game/${this.game.id}/process`).pipe(first())
   }
 }

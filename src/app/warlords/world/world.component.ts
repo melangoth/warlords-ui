@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {first} from 'rxjs';
+import {first, mergeMap} from 'rxjs';
 import {Coords, RecruitEvent, Tile, World} from '../model/warlords.model';
 import {WorldService} from '../services/world.service';
 import * as _ from 'lodash';
@@ -99,5 +99,21 @@ export class WorldComponent implements OnInit {
     this.worldService.recruitUnits(
       [...this.recruitEventRegister.values()]
     );
+  }
+
+  closeTurnButtonClicked() {
+    this.worldService.closeTurn()
+      .pipe(
+        mergeMap(() => this.worldService.loadTurn())
+      )
+      .subscribe();
+  }
+
+  processTurnButtonClicked() {
+    this.worldService.processTurn()
+      .pipe(
+        mergeMap(() => this.worldService.loadTurn())
+      )
+      .subscribe();
   }
 }

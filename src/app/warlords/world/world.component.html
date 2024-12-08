@@ -20,6 +20,10 @@
         <div>Turn:</div>
         <div>{{ world.turnStatus }} - {{ world.turnNumber }}</div>
       </div>
+      <div class="turnButtons">
+        <button (click)="closeTurnButtonClicked()">Close</button>
+        <button (click)="processTurnButtonClicked()">Process</button>
+      </div>
     </div>
     <div>
       <div class="selected-tile">
