@@ -80,44 +80,67 @@ $color-s-primary: #900000;
   position: absolute;
   pointer-events: none;
 
-  .direction {
-    border: 1px solid red;
+  .direction-triangle {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent; // half of base width
+    border-right: 10px solid transparent; // half of base width
+    border-bottom: 10px solid black; // height
+    transform-origin: center;
+    opacity: 30%;
+    cursor: pointer;
   }
 
   .N {
     position: absolute;
     right: calc(50% - .5em);
-    top: 0;
+    //top: 0; // rectangle
+    top: 3px; // triangle
+    transform: rotate(0deg);
   }
 
   .NE {
     position: absolute;
-    right: 15%;
-    top: 20%;
+    //right: 15%; // rectangle
+    right: 10%; // triangle
+    //top: 20%; // rectangle
+    top: 24%; // triangle
+    transform: rotate(60deg);
   }
 
-  .NW {
+  .SE {
     position: absolute;
-    left: 15%;
-    top: 20%;
+    //right: 15%; // rectangle
+    right: 10%; // triangle
+    //bottom: 20%; // rectangle
+    bottom: 24%; // triangle
+    transform: rotate(120deg);
   }
 
   .S {
     position: absolute;
     right: calc(50% - .5em);
-    bottom: 0;
-  }
-
-  .SE {
-    position: absolute;
-    right: 15%;
-    bottom: 20%;
+    //bottom: 0; // rectangle
+    bottom: 2px; // triangle
+    transform: rotate(180deg);
   }
 
   .SW {
     position: absolute;
-    left: 15%;
-    bottom: 20%;
+    //left: 15%; // rectangle
+    left: 10%; // triangle
+    //bottom: 20%; // rectangle
+    bottom: 24%; // triangle
+    transform: rotate(240deg);
+  }
+
+  .NW {
+    position: absolute;
+    //left: 15%; // rectangle
+    left: 10%; // triangle
+    //top: 20%; // rectangle
+    top: 24%; // triangle
+    transform: rotate(300deg);
   }
 }
 
