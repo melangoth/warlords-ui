@@ -3,7 +3,7 @@ import {first, mergeMap} from 'rxjs';
 import {Coords, RecruitEvent, Tile, World} from '../model/warlords.model';
 import {WorldService} from '../services/world.service';
 import * as _ from 'lodash';
-import {UnitType} from "../model/commandsix.model";
+import {UnitType} from '../model/commandsix.model';
 
 
 // https://www.redblobgames.com/grids/hexagons/#coordinates
@@ -29,6 +29,7 @@ export class WorldComponent implements OnInit {
 
   dragStart = {x: 0, y: 0};
   dragOffset = {x: 0, y: 0};
+  globalOffset = {x: 50, y: 50};
 
   recruitEventRegister = new Map<UnitType, RecruitEvent>();
   protected readonly UnitType = UnitType;

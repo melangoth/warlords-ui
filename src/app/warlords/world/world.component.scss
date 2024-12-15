@@ -30,7 +30,9 @@ $color-s-primary: #900000;
   position: absolute;
   z-index: 1;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  right: .5em;
 
   > div {
     width: 200px;

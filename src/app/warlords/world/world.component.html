@@ -73,8 +73,8 @@
       [class.selected]="tile.selected"
       [ngClass]="tile.state"
       [style.height.px]="world.tileHeight"
-      [style.left.px]="tile.left + dragOffset.x"
-      [style.top.px]="tile.top + dragOffset.y"
+      [style.left.px]="tile.left + dragOffset.x + globalOffset.x"
+      [style.top.px]="tile.top + dragOffset.y + globalOffset.y"
       [style.width.px]="world.tileWidth"
       class="tile-hex-flat">
       <ng-container *ngIf="showUnits">
@@ -89,8 +89,8 @@
       <div
         *ngFor="let tile of world.tiles; let i = index;"
         [style.height.px]="world.tileHeight"
-        [style.left.px]="tile.left + dragOffset.x"
-        [style.top.px]="tile.top + dragOffset.y"
+        [style.left.px]="tile.left + dragOffset.x + globalOffset.x"
+        [style.top.px]="tile.top + dragOffset.y + globalOffset.y"
         [style.width.px]="world.tileWidth"
         class="tile-info">
         <div class="coords">
@@ -104,8 +104,8 @@
       <div
         *ngFor="let tile of world.tiles; let i = index;"
         [style.height.px]="world.tileHeight"
-        [style.left.px]="tile.left + dragOffset.x"
-        [style.top.px]="tile.top + dragOffset.y"
+        [style.left.px]="tile.left + dragOffset.x + globalOffset.x"
+        [style.top.px]="tile.top + dragOffset.y + globalOffset.y"
         [style.width.px]="world.tileWidth"
         class="movement-indicators">
         <div class="direction-triangle N"></div>
