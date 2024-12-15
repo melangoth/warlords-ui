@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {first, mergeMap} from 'rxjs';
-import {Coords, RecruitEvent, Tile, World} from '../model/warlords.model';
+import {Coords, MovementEvent, RecruitEvent, Tile, World} from '../model/warlords.model';
 import {WorldService} from '../services/world.service';
 import * as _ from 'lodash';
 import {UnitType} from '../model/commandsix.model';
@@ -32,6 +32,7 @@ export class WorldComponent implements OnInit {
   globalOffset = {x: 50, y: 50};
 
   recruitEventRegister = new Map<UnitType, RecruitEvent>();
+  movementEventRegister = new Map<string, MovementEvent>();
   protected readonly UnitType = UnitType;
 
   constructor(private worldService: WorldService) {

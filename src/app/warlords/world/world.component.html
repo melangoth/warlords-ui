@@ -3,7 +3,7 @@
 </ng-template>
 <ng-container *ngIf="world else noWorld">
   <div class="info-panel">
-    <div class="settings">
+    <div id="settings">
       <div>
         <div>World:</div>
         <div>{{ world.name }}</div>
@@ -25,8 +25,25 @@
         <button (click)="processTurnButtonClicked()">Process</button>
       </div>
     </div>
-    <div>
-      <div class="selected-tile">
+    <div id="recruits">
+      <div>Recruits</div>
+      <div style="margin: 0 .5em">
+        <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'"
+                         [size]="0"
+                         [type]="UnitType.INFANTRY"></app-unit-widget>
+        <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'"
+                         [size]="0"
+                         [type]="UnitType.CAVALRY"></app-unit-widget>
+        <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'"
+                         [size]="0"
+                         [type]="UnitType.ARTILLERY"></app-unit-widget>
+        <div style="display: flex; flex-direction: row; justify-content: flex-end">
+          <button (click)="submitRecruitAction()">Submit</button>
+        </div>
+      </div>
+    </div>
+    <div id="selected-tile-and-units">
+      <div id="selected-tile">
         <span>Selected tile:</span>
         <ng-container *ngIf="selectedTile">
         <span>
@@ -47,19 +64,12 @@
           </ng-container>
         </div>
       </div>
-      <div>
-        <div>Recruit</div>
-        <div style="margin: 0 .5em">
-          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
-                           [type]="UnitType.INFANTRY"></app-unit-widget>
-          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
-                           [type]="UnitType.CAVALRY"></app-unit-widget>
-          <app-unit-widget (unitSizeChanged)="registerRecruits($event)" [editable]="true" [restrictions]="'non_negative'" [size]="0"
-                           [type]="UnitType.ARTILLERY"></app-unit-widget>
-          <div style="display: flex; flex-direction: row; justify-content: flex-end">
-            <button (click)="submitRecruitAction()">Submit</button>
-          </div>
-        </div>
+    </div>
+    <div *ngIf="selectedTile" id="movements">
+      <div>Movements</div>
+      <div *ngFor="let unitGroup of selectedTile.unitGroups | keyvalue">
+        <div>{{ unitGroup.key }} units</div>
+        <div *ngFor="let unit of unitGroup.value.units">{{ unit.id }}</div>
       </div>
     </div>
   </div>

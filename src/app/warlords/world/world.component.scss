@@ -42,7 +42,7 @@ $color-s-primary: #900000;
     background-color: #eeeeee;
   }
 
-  .settings {
+  #settings {
     display: flex;
     flex-direction: column;
 
@@ -52,7 +52,7 @@ $color-s-primary: #900000;
     }
   }
 
-  .selected-tile {
+  #selected-tile {
     display: flex;
     justify-content: space-between;
   }

@@ -1,4 +1,4 @@
-import {CommandSixUnit, UnitType} from "./commandsix.model";
+import {CommandSixUnit, UnitType} from './commandsix.model';
 
 export class World {
   public readonly tileRadius = 70;
@@ -136,5 +136,10 @@ export class Player {
 
 export class RecruitEvent {
   constructor(public unitType: UnitType, public quantity: number, public coords: Coords = new Coords(0, 0)) {
+  }
+}
+
+export class MovementEvent {
+  constructor(public origin: Coords, public destination: Coords, units: CommandSixUnit[]) {
   }
 }
